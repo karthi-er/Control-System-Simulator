@@ -1,11 +1,31 @@
 import numpy as np
 
-def simulate_first_order(controller,setpoint=1.0,sim_time=10,dt=0.01):
-    t=np.arange(0,sim_time,dt)
-    y=0.0
-    r=[]
-    for _ in t:
-        u=controller.update(setpoint,y,dt)
-        y += ((-y+u)/1.5)*dt
-        r.append(y)
-    return t,np.array(r)
+def simulate_first_order(pid):
+
+    dt = 0.01
+
+    time = np.arange(0,10,dt)
+
+    response = []
+
+    y = 0
+
+    setpoint = 1
+
+    for t in time:
+
+        error = setpoint - y
+
+        control = pid.update(error,dt)
+
+        tau = 1.5
+
+        dy = (
+            -y + control
+        ) / tau
+
+        y += dy * dt
+
+        response.append(y)
+
+    return time,response
